@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>약 알리미</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .hidden {
+            display: none;
+        }
+        /* 메인 화면 스타일 */
+        #main-screen {
+            text-align: center;
+        }
+        .medicine-card {
+            padding: 20px;
+            background-color: #ff7043;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .add-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #ff7043;
+            color: white;
+            font-size: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        /* 입력 화면 스타일 */
+        #input-screen h2 {
+            margin-top: 0;
+            color: #ff7043;
+        }
+        label, input[type="time"], input[type="number"], .day-buttons, .btn {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .day-buttons {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .day {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ff7043;
+            color: #ff7043;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .day.active {
+            background-color: #ff7043;
+            color: white;
+        }
+        .btn {
+            background-color: #ff7043;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #ff5722;
+        }
+    </style>
+</head>
+<body>
+
+<!-- 메인 화면 -->
+<div class="container" id="main-screen">
+    <h2>약 알리미</h2>
+    <button class="add-button" onclick="showInputScreen()">+</button>
+</div>
+<!-- 입력 화면 -->
+<div class="container hidden" id="input-screen">
+    <h2>복용 설정</h2>
+    <div class="form-group">
+        <label>복용 요일을 선택하세요</label>
+        <div class="day-buttons">
+            <div class="day" data-day="일">일</div>
+            <div class="day" data-day="월">월</div>
+            <div class="day" data-day="화">화</div>
+            <div class="day" data-day="수">수</div>
+            <div class="day" data-day="목">목</div>
+            <div class="day" data-day="금">금</div>
+            <div class="day" data-day="토">토</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="dose-times">하루에 몇 번 복용하세요?</label>
+        <input type="number" id="dose-times" value="1" min="1" max="5" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+    </div>
+    <div class="form-group" id="time-container">
+        <label>복용 시간</label>
+        <div class="schedule-group">
+            <input type="time" class="dose-time" value="08:00" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+    </div>
+    <button class="btn" onclick="addDoseTime()">복용 시간 추가</button>
+    <div class="form-group">
+        <button class="btn" onclick="saveSchedule()">저장</button>
+        <button class="btn" onclick="showMainScreen()" style="background-color: #ccc; color: #333;">취소</button>
+    </div>
+</div>
+<script>
+    // 메인 화면으로 이동
+    function showMainScreen() {
+        document.getElementById('main-screen').classList.remove('hidden');
+        document.getElementById('input-screen').classList.add('hidden');
+    }
+
+    // 입력 화면으로 이동
+    function showInputScreen() {
+        document.getElementById('main-screen').classList.add('hidden');
+        document.getElementById('input-screen').classList.remove('hidden');
+    }
+
+    // 요일 선택 기능
+    document.querySelectorAll('.day').forEach(button => {
+        button.addEventListener('click', () => {
+            button.classList.toggle('active');
+        });
+    });
+
+    // 복용 시간 추가 기능
+    function addDoseTime() {
+        const timeContainer = document.getElementById('time-container');
+        const newTimeGroup = document.createElement('div');
+        newTimeGroup.classList.add('schedule-group');
+        newTimeGroup.innerHTML = `
+            <input type="time" class="dose-time" value="08:00" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <button onclick="removeDoseTime(this)" style="background-color: #ff7043; color: white; border: none; padding: 8px; margin-top: 10px; border-radius: 5px; cursor: pointer;">삭제</button>
+        `;
+        timeContainer.appendChild(newTimeGroup);
+    }
+
+    // 복용 시간 삭제 기능
+    function removeDoseTime(button) {
+        button.parentElement.remove();
+    }
+
+    // 저장 기능
+    function saveSchedule() {
+    const selectedDays = Array.from(document.querySelectorAll('.day.active')).map(day => day.dataset.day);
+    const doseTimes = Array.from(document.querySelectorAll('.dose-time')).map(time => time.value);
+
+    const schedule = {
+        days: selectedDays.join(', '),
+        times: doseTimes.join(', ')
+    };
+
+    // 새로운 카드 요소 생성
+    const newCard = document.createElement('div');
+    newCard.classList.add('medicine-card');
+    newCard.innerHTML = `
+        <span>복용 요일: ${schedule.days}</span>
+        <span>시간: ${schedule.times}</span>
+    `;
+
+    // 메인 화면에 카드 추가
+    document.getElementById('main-screen').appendChild(newCard);
+
+    alert('약 알림이 저장되었습니다!');
+    showMainScreen(); // 메인 화면으로 돌아가기
+}
+
+</script>
+</body>
+</html>
