@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경마 게임 🐎</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 0; }
+        .race-track { width: 100%; max-width: 600px; height: 300px; margin: 10px auto; position: relative; border: 2px solid black; padding: 5px; overflow: hidden; background-color: #f0f0f0; }
+        .horse { font-size: 24px; position: absolute; left: 0; transition: none; white-space: nowrap; }
+        .finish-line { position: absolute; top: 0; bottom: 0; width: 4px; background: red; }
+        #controls { margin: 10px; }
+        button, input { font-size: 16px; padding: 5px; margin: 5px; }
+        #horse-selection label { display: block; font-size: 16px; }
+        @media (max-width: 480px) {
+            .horse { font-size: 20px; } 
+            button, input { font-size: 14px; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🏇 경마 게임 🐎</h1>
+
+    <div id="controls">
+        <label for="ranking">몇 등까지 뽑을까요?</label>
+        <input type="number" id="ranking" min="1" max="5" value="3">
+        <button onclick="startRace()">경주 시작!</button>
+    </div>
+
+    <h3>🏇 제외할 말 선택:</h3>
+    <div id="horse-selection">
+        <label><input type="checkbox" value="뒤장" checked> 뒤장</label>
+        <label><input type="checkbox" value="림" checked> 림</label>
+        <label><input type="checkbox" value="도" checked> 도</label>
+        <label><input type="checkbox" value="개굴" checked> 개굴</label>
+        <label><input type="checkbox" value="부깅" checked> 부깅</label>
+    </div>
+
+    <div class="race-track">
+        <div id="horses"></div>
+        <div class="finish-line"></div>
+    </div>
+
+    <h2 id="result"></h2>
+
+    <script>
+        function startRace() {
+            let selectedHorses = [];
+            document.querySelectorAll('#horse-selection input:checked').forEach(input => {
+                selectedHorses.push(input.value);
+            });
+
+            if (selectedHorses.length === 0) {
+                alert("최소 한 마리 이상 선택해야 합니다!");
+                return;
+            }
+
+            let rankingLimit = parseInt(document.getElementById("ranking").value);
+            rankingLimit = Math.min(rankingLimit, selectedHorses.length);
+
+            let raceTrack = document.querySelector(".race-track");
+            let raceTrackWidth = raceTrack.clientWidth;
+            let finishLineX = raceTrackWidth * 0.9; // 결승선을 트랙의 90% 지점에 배치
+            document.querySelector(".finish-line").style.left = `${finishLineX}px`;
+
+            let raceArea = document.getElementById("horses");
+            raceArea.innerHTML = "";
+
+            let horsePositions = {};
+            let finishedHorses = [];
+            let raceInterval;
+
+            selectedHorses.forEach((horseName, index) => {
+                let horse = document.createElement("div");
+                horse.className = "horse";
+                horse.innerText = `🐎 ${horseName}`;
+                horse.style.top = `${index * 50}px`;
+                raceArea.appendChild(horse);
+                horsePositions[horseName] = 0;
+            });
+
+            raceInterval = setInterval(() => {
+                selectedHorses = selectedHorses.filter(horseName => {
+                    if (finishedHorses.includes(horseName)) return false;
+
+                    let moveDistance = Math.random() * 30;
+                    horsePositions[horseName] += moveDistance;
+
+                    let horseElement = Array.from(document.querySelectorAll(".horse")).find(h => h.innerText.includes(horseName));
+                    if (horseElement) {
+                        let horseWidth = horseElement.offsetWidth;
+                        let horseRight = horsePositions[horseName] + horseWidth;
+                        
+                        horseElement.style.left = `${horsePositions[horseName]}px`;
+
+                        if (horseRight >= finishLineX + 50) { // 결승선 + 50px 추가 이동 후 도착 처리
+                            finishedHorses.push(horseName);
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
+                if (finishedHorses.length >= rankingLimit) {
+                    clearInterval(raceInterval);
+                    document.getElementById("result").innerHTML = `🎉 결과: ${finishedHorses.slice(0, rankingLimit).join(", ")} 🏆`;
+                }
+            }, 1000);
+        }
+    </script>
+
+</body>
+</html>
