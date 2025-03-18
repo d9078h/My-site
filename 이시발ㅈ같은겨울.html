@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시발</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #001f3f, #87CEEB);
+            height: 100vh;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 10px;
+            opacity: 0.8;
+            user-select: none;
+            pointer-events: none;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function createSnowflake() {
+            const snowflake = document.createElement("div");
+            snowflake.innerHTML = "❄";
+            snowflake.classList.add("snowflake");
+            document.body.appendChild(snowflake);
+
+            // 랜덤 위치 및 크기 설정
+            const size = Math.random() * 20 + 10;
+            snowflake.style.left = Math.random() * window.innerWidth + "px";
+            snowflake.style.fontSize = size + "px";
+            snowflake.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+            // 일정 시간 후 제거
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+
+        // 눈 생성 (0.1초마다 새로운 눈송이 추가)
+        setInterval(createSnowflake, 100);
+    </script>
+</body>
+</html>
