@@ -1,66 +1,46 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>김도현 | 개발자</title>
+  <meta charset="UTF-8">
+  <title>Dev Card - 김도현</title>
   <style>
     body {
       margin: 0;
       background-color: #0d1117;
       color: #c9d1d9;
-      font-family: 'Courier New', monospace;
+      font-family: 'Courier New', Courier, monospace;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
     }
 
     .card {
       background-color: #161b22;
       border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 24px;
-      width: 90%;
-      max-width: 400px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      border-radius: 10px;
+      padding: 30px 40px;
+      box-shadow: 0 0 10px rgba(0, 255, 180, 0.2);
+      max-width: 90%;
     }
 
-    .name {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #ffffff; /* 이름을 흰색으로 */
-      margin-bottom: 8px;
+    .line {
+      margin: 6px 0;
+      white-space: pre;
     }
 
-    .job {
-      font-size: 1.2rem;
-      color: #8b949e;
-      margin-bottom: 20px;
-    }
-
-    .contact {
-      font-size: 1rem;
-      background-color: #21262d;
-      padding: 12px;
-      border-radius: 8px;
-      color: #d2d5da;
-    }
-
-    .label {
-      color: #6e7681;
-      font-size: 0.9rem;
-    }
+    .keyword { color: #ff7b72; }
+    .string  { color: #a5d6ff; }
+    .comment { color: #8b949e; font-style: italic; }
   </style>
 </head>
 <body>
   <div class="card">
-    <div class="name">김도현</div>
-    <div class="job">개발자</div>
-    <div class="contact">
-      <div class="label">Contact</div>
-      010-2965-9078
-    </div>
+    <div class="line comment">// Developer Business Card</div>
+    <div class="line"><span class="keyword">const</span> name     = <span class="string">"김도현"</span>;</div>
+    <div class="line"><span class="keyword">const</span> job      = <span class="string">"프리랜서 개발자"</span>;</div>
+    <div class="line"><span class="keyword">const</span> email    = <span class="string">"d9078h@gmail.com"</span>;</div>
+    <div class="line"><span class="keyword">const</span> company  = <span class="string">null</span>; <span class="comment">// 소속 없음</span></div>
   </div>
 </body>
 </html>
