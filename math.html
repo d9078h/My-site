@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>이진수 → 십진수 변환기</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 40px;
+      font-size: 1rem;
+    }
+
+    .description code {
+      color: #00e0ff;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .converter {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #111;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      font-size: 1.1rem;
+      width: 100%;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: none;
+      background: #222;
+      color: #0ff;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: #0ff;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #00cccc;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      white-space: pre-line;
+    }
+
+    .formula {
+      margin-top: 40px;
+      font-size: 1rem;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>이진수 → 십진수 변환기</h1>
+
+  <div class="description">
+    컴퓨터는 0과 1로만 수를 표현하는 이진법을 사용합니다.<br>
+    이 숫자들은 각 자릿값이 <code>2<sup>n−1</sup></code> 구조의 등비수열로 구성됩니다.<br><br>
+    예를 들어 <code>0b10101</code>은<br>
+    <code>2<sup>0</sup>(1) + 2<sup>2</sup>(4) + 2<sup>4</sup>(16)</code>의 합으로 <strong>21</strong>이 됩니다.<br><br>
+    이진법의 원리는 컴퓨터의 저장 단위에도 적용됩니다.<br>
+    1킬로바이트는 1024바이트이며, 이는 <code>2<sup>10</sup></code>입니다.<br>
+    AI가 이미지를 처리할 때도 픽셀 수는 <code>256×256</code>, <code>512×512</code>처럼 <code>2<sup>n</sup></code> 단위로 구성되어 있습니다.<br>
+    이렇게 이진법의 질서 위에서 컴퓨터는 세상을 이해합니다.<br><br>
+    예시) <code>0b1011</code> → <code>a<sub>1</sub>(2<sup>0</sup>) + a<sub>2</sub>(2<sup>1</sup>) + a<sub>4</sub>(2<sup>3</sup>) = 1 + 2 + 8 = 11</code>
+  </div>
+
+  <div class="converter">
+    <input type="text" id="binaryInput" placeholder="예: 0b1011 또는 1011" />
+    <button onclick="convert()">변환하기</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <p class="formula">일반항: <code>a<sub>n</sub> = 2<sup>n−1</sup></code></p>
+
+  <script>
+    function convert() {
+      const input = document.getElementById("binaryInput").value.trim();
+      const binary = input.startsWith("0b") ? input.slice(2) : input;
+
+      if (!/^[01]+$/.test(binary)) {
+        document.getElementById("result").innerText = "올바른 이진수를 입력해주세요.";
+        return;
+      }
+
+      let explanation = "";
+      let sum = 0;
+      let length = binary.length;
+
+      for (let i = 0; i < length; i++) {
+        const bit = binary[length - 1 - i];
+        if (bit === "1") {
+          const power = i;
+          const value = Math.pow(2, power);
+          explanation = `a<sub>${power + 1}</sub>(2<sup>${power}</sup>) + ` + explanation;
+          sum += value;
+        }
+      }
+
+      explanation = explanation.replace(/\+ $/, ""); // remove trailing +
+      explanation += ` = ${sum}`;
+
+      document.getElementById("result").innerHTML = explanation;
+    }
+  </script>
+</body>
+</html>
